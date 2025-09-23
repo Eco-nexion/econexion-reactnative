@@ -1,48 +1,67 @@
 {
 	"expo": {
-		"name": "econexion-reactnative",
-		"slug": "econexion-reactnative",
+		"name": "Econexion",
+		"slug": "econexion-app",
 		"version": "1.0.0",
+		"description": "Aplicación móvil para promover conexiones ecológicas y sostenibilidad ambiental",
 		"orientation": "portrait",
-		"icon": "./assets/images/icon.png",
-		"scheme": "econexionreactnative",
+		"scheme": "econexion",
 		"userInterfaceStyle": "automatic",
 		"newArchEnabled": true,
+		"primaryColor": "#22C55E",
+		"backgroundColor": "#F0FDF4",
+		"splash": {
+			"resizeMode": "contain",
+			"backgroundColor": "#F0FDF4"
+		},
+		"assetBundlePatterns": [
+			"**/*"
+		],
 		"ios": {
-			"supportsTablet": true
+			"supportsTablet": true,
+			"bundleIdentifier": "com.econexion.app",
+			"buildNumber": "1.0.0",
+			"infoPlist": {
+				"UIRequiresFullScreen": false,
+				"NSLocationWhenInUseUsageDescription": "Esta aplicación utiliza la ubicación para encontrar iniciativas ecológicas cercanas.",
+				"NSCameraUsageDescription": "Esta aplicación utiliza la cámara para capturar imágenes de actividades ecológicas.",
+				"NSPhotoLibraryUsageDescription": "Esta aplicación accede a la galería para seleccionar fotos de actividades ambientales."
+			}
 		},
 		"android": {
+			"package": "com.econexion.app",
+			"versionCode": 1,
 			"adaptiveIcon": {
-				"backgroundColor": "#E6F4FE",
-				"foregroundImage": "./assets/images/android-icon-foreground.png",
-				"backgroundImage": "./assets/images/android-icon-background.png",
-				"monochromeImage": "./assets/images/android-icon-monochrome.png"
+				"backgroundColor": "#22C55E"
 			},
+			"permissions": [
+				"ACCESS_FINE_LOCATION",
+				"ACCESS_COARSE_LOCATION",
+				"CAMERA",
+				"READ_EXTERNAL_STORAGE"
+			],
 			"edgeToEdgeEnabled": true,
 			"predictiveBackGestureEnabled": false
 		},
 		"web": {
 			"output": "static",
-			"favicon": "./assets/images/favicon.png"
+			"bundler": "metro"
 		},
 		"plugins": [
 			"expo-router",
-			[
-				"expo-splash-screen",
-				{
-					"image": "./assets/images/splash-icon.png",
-					"imageWidth": 200,
-					"resizeMode": "contain",
-					"backgroundColor": "#ffffff",
-					"dark": {
-						"backgroundColor": "#000000"
-					}
-				}
-			]
+			"expo-splash-screen"
 		],
 		"experiments": {
 			"typedRoutes": true,
 			"reactCompiler": true
+		},
+		"extra": {
+			"router": {
+				"origin": false
+			},
+			"eas": {
+				"projectId": "tu-project-id-aqui"
+			}
 		}
 	}
 }
