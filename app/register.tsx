@@ -28,7 +28,12 @@ export default function Register() {
     // state for UI only if needed later
 
     const setField = <K extends keyof RegisterForm>(key: K, value: RegisterForm[K]) =>
-        setForm((prev) => ({ ...prev, [key]: value }));
+        setForm((prev) => {
+            const next = { ...prev, [key]: value };
+            // Recalcular errores en cada cambio para habilitar/deshabilitar el botón inmediatamente
+            setErrors(collectErrors(next));
+            return next;
+        });
 
     const collectErrors = (f: RegisterForm): RegisterFormErrors => {
         const e: RegisterFormErrors = {};
@@ -74,14 +79,14 @@ export default function Register() {
 
     const isSubmitDisabled = () => {
         const requiredFilled =
-            form.companyName &&
-            form.userName &&
-            form.position &&
-            form.email &&
-            form.password &&
-            form.confirmPassword &&
+            form.companyName.trim().length > 0 &&
+            form.userName.trim().length > 0 &&
+            form.position.trim().length > 0 &&
+            form.email.trim().length > 0 &&
+            form.password.trim().length > 0 &&
+            form.confirmPassword.trim().length > 0 &&
             !!form.role;
-        return !requiredFilled || !!Object.keys(errors).length;
+        return !requiredFilled || Object.keys(errors).length > 0;
     };
 
     const onSubmit = () => {
