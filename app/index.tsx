@@ -1,5 +1,6 @@
 import { Colors, FontSize, Spacing } from '@/constants';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Link } from 'expo-router';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Home() {
@@ -20,6 +21,15 @@ export default function Home() {
                     <Text style={styles.placeholderText}>
                         Próximamente: botones de inicio de sesión con Google y Microsoft
                     </Text>
+                    <Link href='/register' asChild>
+                        <Pressable
+                            style={styles.ctaButton}
+                            accessibilityRole='button'
+                            accessibilityLabel='Ir al formulario de registro'
+                        >
+                            <Text style={styles.ctaButtonText}>Ir al registro</Text>
+                        </Pressable>
+                    </Link>
                 </View>
             </View>
         </SafeAreaView>
@@ -70,5 +80,17 @@ const styles = StyleSheet.create({
         fontSize: FontSize.medium,
         color: Colors.gray,
         paddingHorizontal: Spacing.md,
+    },
+    ctaButton: {
+        marginTop: Spacing.md,
+        backgroundColor: Colors.ecoGreen,
+        paddingHorizontal: Spacing.lg,
+        paddingVertical: Spacing.md,
+        borderRadius: 10,
+    },
+    ctaButtonText: {
+        color: '#fff',
+        fontWeight: '600',
+        fontSize: FontSize.medium,
     },
 });
