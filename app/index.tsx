@@ -1,4 +1,4 @@
-import { Colors, FontSize, Spacing } from '@/constants';
+import { Colors, FontSize, Spacing } from '@/src/constants';
 import { Link } from 'expo-router';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -9,7 +9,7 @@ export default function Home() {
             <View style={styles.container}>
                 <View style={styles.brandSection}>
                     <Image
-                        source={require('../assets/images/icon.png')}
+                        source={require('@/src/assets/images/icon.png')}
                         style={styles.logo}
                         resizeMode='contain'
                         accessibilityLabel='Econexion logo'
@@ -21,7 +21,7 @@ export default function Home() {
                     <Text style={styles.placeholderText}>
                         Próximamente: botones de inicio de sesión con Google y Microsoft
                     </Text>
-                    <Link href='/register' asChild>
+                    <Link href='/auth/register' asChild>
                         <Pressable
                             style={styles.ctaButton}
                             accessibilityRole='button'

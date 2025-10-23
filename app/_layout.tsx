@@ -12,6 +12,8 @@ export default function RootLayout() {
                         title: 'Econexion',
                     }}
                 />
+                <Stack.Screen name="auth" />
+                <Stack.Screen name="dashboard" />
             </Stack>
         </SafeAreaProvider>
     );

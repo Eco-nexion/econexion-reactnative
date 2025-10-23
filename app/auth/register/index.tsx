@@ -1,5 +1,5 @@
-import { Colors, FontSize, Spacing } from '@/constants';
-import { isEmailValid, MAX_PHOTO_SIZE_MB, type RegisterForm, type RegisterFormErrors, type Role } from '@/types/forms';
+import { Colors, FontSize, Spacing } from '@/src/constants';
+import { isEmailValid, MAX_PHOTO_SIZE_MB, type RegisterForm, type RegisterFormErrors, type Role } from '@/src/types/forms';
 import { Link } from 'expo-router';
 import { useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
@@ -10,7 +10,7 @@ const roles: { label: string; value: Role }[] = [
     { label: 'Vendedor', value: 'vendedor' },
 ];
 
-export default function Register() {
+export default function Index() {
     const [form, setForm] = useState<RegisterForm>({
         companyName: '',
         nit: '',
@@ -206,7 +206,7 @@ export default function Register() {
 
                 <View style={styles.loginRow}>
                     <Text style={styles.loginText}>¿Ya tienes cuenta?</Text>
-                    <Link href={{ pathname: '/login' }} style={styles.loginLink}>
+                    <Link href={{ pathname: '/auth/login' }} style={styles.loginLink}>
                         Inicia sesión
                     </Link>
                 </View>

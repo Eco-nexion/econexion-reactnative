@@ -1,26 +1,42 @@
-import { Colors, FontSize, Spacing } from '@/constants';
-import { isEmailValid } from '@/types/forms';
+import { Colors, FontSize, Spacing } from '@/src/constants';
+import { isEmailValid } from '@/src/types/forms';
 import { Link, useRouter } from 'expo-router';
-import { useState } from 'react';
-import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useState, useContext } from 'react';
+import { Image, Pressable, StyleSheet, Text, TextInput, View, ActivityIndicator, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { AuthContext } from '@/src/contexts/AuthContext';
 
 export default function Login() {
     const router = useRouter();
+    const { signIn } = useContext(AuthContext);
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     const disabled = !isEmailValid(email) || password.trim().length === 0;
 
-    const onSubmit = () => {
+    const onSubmit = async () => {
         setError(null);
         if (disabled) {
             setError('Revisa tus datos e inténtalo de nuevo.');
             return;
         }
-        // Simulación de login exitoso. Aquí iría la llamada al backend.
+
+        setIsLoading(true);
+        try {
+            await signIn({ email, password });
+            // Redirigir al dashboard después del login exitoso
+            router.replace('/dashboard');
+        } catch (err: any) {
+            setError(err.message || 'Error al iniciar sesión. Verifica tus credenciales.');
+            Alert.alert('Error', err.message || 'No se pudo iniciar sesión');
+        } finally {
+            setIsLoading(false);
+        }
+
         router.replace('/');
     };
 
@@ -29,7 +45,7 @@ export default function Login() {
             <View style={styles.container}>
                 <View style={styles.header}>
                     <Image
-                        source={require('../assets/images/icon.png')}
+                        source={require('@/src/assets/images/icon.png')}
                         style={styles.logo}
                         resizeMode='contain'
                         accessibilityLabel='Logo de Econexion'
@@ -45,11 +61,15 @@ export default function Login() {
                             <TextInput
                                 style={styles.input}
                                 value={email}
-                                onChangeText={setEmail}
+                                onChangeText={(text) => {
+                                    setEmail(text);
+                                    setError(null);
+                                }}
                                 placeholder='correo@dominio.com'
                                 keyboardType='email-address'
                                 autoCapitalize='none'
                                 autoComplete='email'
+                                editable={!isLoading}
                             />
                         </View>
 
@@ -59,12 +79,16 @@ export default function Login() {
                                 <TextInput
                                     style={[styles.input, { flex: 1 }]}
                                     value={password}
-                                    onChangeText={setPassword}
+                                    onChangeText={(text) => {
+                                        setPassword(text);
+                                        setError(null);
+                                    }}
                                     placeholder='Tu clave'
                                     secureTextEntry={!showPassword}
                                     autoComplete='password'
+                                    editable={!isLoading}
                                 />
-                                <Pressable onPress={() => setShowPassword((s) => !s)} style={styles.showBtn}>
+                                <Pressable onPress={() => setShowPassword((s) => !s)} style={styles.showBtn} disabled={isLoading}>
                                     <Text style={styles.showBtnText}>{showPassword ? 'Ocultar' : 'Mostrar'}</Text>
                                 </Pressable>
                             </View>
@@ -77,17 +101,21 @@ export default function Login() {
                         ) : null}
 
                         <Pressable
-                            style={[styles.submit, disabled && styles.submitDisabled]}
-                            disabled={disabled}
+                            style={[styles.submit, (disabled || isLoading) && styles.submitDisabled]}
+                            disabled={disabled || isLoading}
                             onPress={onSubmit}
                             accessibilityRole='button'
                             accessibilityLabel='Confirmar inicio de sesión'
                         >
-                            <Text style={styles.submitText}>Entrar</Text>
+                            {isLoading ? (
+                                <ActivityIndicator color='#fff' />
+                            ) : (
+                                <Text style={styles.submitText}>Entrar</Text>
+                            )}
                         </Pressable>
 
                         <View style={styles.rowBetween}>
-                            <Link href='/register' style={styles.link}>
+                            <Link href='/auth/register' style={styles.link}>
                                 Crear cuenta
                             </Link>
                             <Pressable accessibilityRole='button'>
