@@ -62,8 +62,9 @@
 				"origin": false
 			},
 			"eas": {
-				"projectId": "tu-project-id-aqui"
+				"projectId": "6b6db966-6ffc-4a6b-a927-617a39b0e3d4"
 			}
-		}
+		},
+		"owner": "automemorynn"
 	}
 }

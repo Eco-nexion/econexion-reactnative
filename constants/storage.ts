@@ -6,6 +6,7 @@ export const STORAGE_KEYS = {
     user_name: 'EconexionName',
     user_email: 'EconexionEmail',
     user_id: 'EconexionUserId',
+    user_type: 'EconexionUserType',
 } as const;
 
 /**

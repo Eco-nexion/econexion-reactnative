@@ -1,6 +1,6 @@
 import { STORAGE_KEYS } from '@/constants';
+import { storage } from '@/utils';
 import { Link, useRouter } from 'expo-router';
-import * as SecureStore from 'expo-secure-store';
 import { useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -32,7 +32,7 @@ export default function Login() {
 
     const disabled = !isEmailValid(email) || password.trim().length === 0;
 
-    const onSubmit = () => {
+    const onSubmit = async () => {
         setError(null);
         if (disabled) {
             setError('Revisa tus datos e inténtalo de nuevo.');
@@ -43,12 +43,15 @@ export default function Login() {
                 id: 'mock-user-id-123',
                 email: 'Econexion@example.com',
                 name: 'Econexion Mock',
+                user_type: 'vende',
             },
             token: 'mock-jwt-token-econexion-abc123xyz',
         };
-        SecureStore.setItem(STORAGE_KEYS.token, mockResponse.token);
-        SecureStore.setItem(STORAGE_KEYS.user_name, mockResponse.user.name);
-        SecureStore.setItem(STORAGE_KEYS.user_email, mockResponse.user.email);
+        await storage.setItem(STORAGE_KEYS.token, mockResponse.token);
+        await storage.setItem(STORAGE_KEYS.user_name, mockResponse.user.name);
+        await storage.setItem(STORAGE_KEYS.user_email, mockResponse.user.email);
+        await storage.setItem(STORAGE_KEYS.user_type, mockResponse.user.user_type);
+
         router.replace('/');
     };
 

@@ -1,8 +1,8 @@
 import { Colors, FontSize, Spacing, STORAGE_KEYS } from '@/constants';
+import { storage } from '@/utils';
 import { makeRedirectUri } from 'expo-auth-session';
 import * as Google from 'expo-auth-session/providers/google';
 import { Link } from 'expo-router';
-import * as SecureStore from 'expo-secure-store';
 import * as WebBrowser from 'expo-web-browser';
 import { useEffect, useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
@@ -42,6 +42,7 @@ export default function Home() {
         if (!response) {
             return;
         }
+
         if (response.type === 'success') {
             setIsExchanging(false);
             setAuthError(null);
@@ -62,20 +63,28 @@ export default function Home() {
                     id: 'mock-user-id-123',
                     email: 'Google@example.com',
                     name: 'Google Mock',
+                    user_type: 'compra',
                 },
                 token: 'mock-jwt-token-google-abc123xyz',
             };
 
             // Simular delay de red
-            setTimeout(() => {
+            setTimeout(async () => {
                 console.log('Mock response:', mockResponse);
-                SecureStore.setItem(STORAGE_KEYS.token, mockResponse.token);
-                SecureStore.setItem(STORAGE_KEYS.user_name, mockResponse.user.name);
-                SecureStore.setItem(STORAGE_KEYS.user_email, mockResponse.user.email);
+                await storage.setItem(STORAGE_KEYS.token, mockResponse.token);
+                await storage.setItem(STORAGE_KEYS.user_name, mockResponse.user.name);
+                await storage.setItem(STORAGE_KEYS.user_email, mockResponse.user.email);
+                await storage.setItem(STORAGE_KEYS.user_type, mockResponse.user.user_type);
             }, 1000);
         } else if (response.type === 'error') {
             setIsExchanging(false);
-            setAuthError('Error en la autorización con Google.');
+            console.error('OAuth error:', response.error);
+            setAuthError(`Error en la autorización: ${response.error?.message || 'Desconocido'}`);
+        } else if (response.type === 'cancel') {
+            setIsExchanging(false);
+            setAuthError('Autenticación cancelada');
+        } else if (response.type === 'dismiss') {
+            setIsExchanging(false);
         }
     }, [response]);
 
@@ -98,7 +107,12 @@ export default function Home() {
                         onPress={() => {
                             setAuthError(null);
                             setIsExchanging(true);
-                            promptAsync({ showInRecents: true });
+                            console.log('Iniciando OAuth...');
+                            promptAsync({ showInRecents: true }).catch((error) => {
+                                console.error('Error al abrir OAuth:', error);
+                                setIsExchanging(false);
+                                setAuthError('No se pudo iniciar el proceso de autenticación');
+                            });
                         }}
                         disabled={isExchanging || !request}
                         accessibilityRole='button'
