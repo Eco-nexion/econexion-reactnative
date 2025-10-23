@@ -30,3 +30,5 @@ export const FontSize = {
     large: 18,
     xlarge: 24,
 };
+
+export * from './storage';

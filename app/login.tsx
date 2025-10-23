@@ -1,4 +1,6 @@
+import { STORAGE_KEYS } from '@/constants';
 import { Link, useRouter } from 'expo-router';
+import * as SecureStore from 'expo-secure-store';
 import { useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -36,7 +38,17 @@ export default function Login() {
             setError('Revisa tus datos e inténtalo de nuevo.');
             return;
         }
-        // Simulación de login exitoso. Aquí iría la llamada al backend.
+        const mockResponse = {
+            user: {
+                id: 'mock-user-id-123',
+                email: 'Econexion@example.com',
+                name: 'Econexion Mock',
+            },
+            token: 'mock-jwt-token-econexion-abc123xyz',
+        };
+        SecureStore.setItem(STORAGE_KEYS.token, mockResponse.token);
+        SecureStore.setItem(STORAGE_KEYS.user_name, mockResponse.user.name);
+        SecureStore.setItem(STORAGE_KEYS.user_email, mockResponse.user.email);
         router.replace('/');
     };
 

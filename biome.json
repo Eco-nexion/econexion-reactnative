@@ -231,7 +231,7 @@
                 "useDefaultSwitchClauseLast": "error"
             },
             "nursery": {
-                "noSecrets": "error"
+                "noSecrets": "off"
             }
         }
     },

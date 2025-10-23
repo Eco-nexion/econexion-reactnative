@@ -1,7 +1,8 @@
-import { Colors, FontSize, Spacing } from '@/constants';
+import { Colors, FontSize, Spacing, STORAGE_KEYS } from '@/constants';
 import { makeRedirectUri } from 'expo-auth-session';
 import * as Google from 'expo-auth-session/providers/google';
 import { Link } from 'expo-router';
+import * as SecureStore from 'expo-secure-store';
 import * as WebBrowser from 'expo-web-browser';
 import { useEffect, useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
@@ -59,19 +60,19 @@ export default function Home() {
             const mockResponse = {
                 user: {
                     id: 'mock-user-id-123',
-                    email: 'usuario@example.com',
-                    name: 'Usuario Mock',
+                    email: 'Google@example.com',
+                    name: 'Google Mock',
                 },
-                token: 'mock-jwt-token-abc123xyz',
+                token: 'mock-jwt-token-google-abc123xyz',
             };
 
             // Simular delay de red
             setTimeout(() => {
                 console.log('Mock response:', mockResponse);
-                // Aquí podrías guardar el token y datos del usuario
+                SecureStore.setItem(STORAGE_KEYS.token, mockResponse.token);
+                SecureStore.setItem(STORAGE_KEYS.user_name, mockResponse.user.name);
+                SecureStore.setItem(STORAGE_KEYS.user_email, mockResponse.user.email);
             }, 1000);
-
-            console.log('Access token obtenido:', accessToken);
         } else if (response.type === 'error') {
             setIsExchanging(false);
             setAuthError('Error en la autorización con Google.');
@@ -105,12 +106,18 @@ export default function Home() {
                     >
                         <Image
                             source={{
-                                uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/48px-Google_%22G%22_Logo.svg.png',
+                                uri: 'https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg',
                             }}
                             style={styles.googleIcon}
                         />
                         <Text style={styles.googleText}>{isExchanging ? 'Conectando' : 'Continuar con Google'}</Text>
                     </Pressable>
+
+                    <Link href='/login' asChild>
+                        <Pressable style={styles.econexionButton}>
+                            <Text style={styles.econexionButtonText}>♻️ Iniciar con Econexion</Text>
+                        </Pressable>
+                    </Link>
 
                     {authError ? <Text style={{ color: '#C00' }}>{authError}</Text> : null}
 
@@ -166,8 +173,10 @@ const styles = StyleSheet.create({
         gap: Spacing.md,
     },
     googleButton: {
+        width: '75%',
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor: '#fff',
         borderWidth: 1,
         borderColor: Colors.gray,
@@ -184,6 +193,22 @@ const styles = StyleSheet.create({
         color: '#000',
         fontSize: FontSize.medium,
         fontWeight: '500',
+    },
+    econexionButton: {
+        width: '75%',
+        backgroundColor: '#fff',
+        borderWidth: 1,
+        borderColor: Colors.gray,
+        paddingHorizontal: Spacing.lg,
+        paddingVertical: Spacing.sm,
+        borderRadius: 8,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    econexionButtonText: {
+        color: '#000',
+        fontSize: FontSize.medium,
+        fontWeight: '600',
     },
     ctaButton: {
         backgroundColor: Colors.ecoGreen,
