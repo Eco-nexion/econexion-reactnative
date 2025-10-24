@@ -9,14 +9,11 @@ import {
     ActivityIndicator,
     RefreshControl,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { AuthContext } from '@/src/contexts/AuthContext';
-import { Colors, Spacing, FontSize } from '@/src/constants';
+import { SafeAreaView } from 'react-native-safe-area-context';import { Colors, Spacing, FontSize } from '@/src/constants';
 import OffersService, { Offer } from '@/src/services/offersService';
 import { useRouter } from 'expo-router';
 
 export default function GeneratorDashboard() {
-    const { user } = useContext(AuthContext);
     const router = useRouter();
     const [receivedOffers, setReceivedOffers] = useState<Offer[]>([]);
     const [completedOffers, setCompletedOffers] = useState<Offer[]>([]);
