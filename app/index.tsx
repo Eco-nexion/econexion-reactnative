@@ -1,5 +1,5 @@
-import { Colors, FontSize, Spacing, STORAGE_KEYS } from '@/constants';
-import { storage } from '@/utils';
+import { Colors, FontSize, Spacing, STORAGE_KEYS } from '@constants';
+import { storage } from '@utils';
 import { makeRedirectUri } from 'expo-auth-session';
 import * as Google from 'expo-auth-session/providers/google';
 import { Link } from 'expo-router';

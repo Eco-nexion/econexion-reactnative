@@ -1,5 +1,5 @@
-import { STORAGE_KEYS } from '@/constants';
-import { storage } from '@/utils';
+import { STORAGE_KEYS } from '@constants';
+import { storage } from '@utils';
 import { Link, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';

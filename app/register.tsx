@@ -1,5 +1,5 @@
-import { Colors, FontSize, Spacing } from '@/constants';
-import { isEmailValid, MAX_PHOTO_SIZE_MB, type RegisterForm, type RegisterFormErrors, type Role } from '@/types/forms';
+import { Colors, FontSize, Spacing } from '@constants';
+import { isEmailValid, MAX_PHOTO_SIZE_MB, type RegisterForm, type RegisterFormErrors, type Role } from '@type/forms';
 import { Link } from 'expo-router';
 import { useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
@@ -172,7 +172,6 @@ export default function Register() {
                     <TextInput
                         style={styles.input}
                         value={form.confirmPassword}
-                        // biome-ignore lint/nursery/noSecrets: <REPLACE_WITH_ACTUAL_SECRET>
                         onChangeText={(t) => setField('confirmPassword', t)}
                         placeholder='Repite tu clave'
                         secureTextEntry
