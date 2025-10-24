@@ -2,7 +2,6 @@
 
 // Brand and UI colors aligned with the Econexion palette
 export const Colors = {
-    // Requested palette
     ecoGreen: '#3B9C3F', // Verde Principal
     limeGreen: '#82C787', // Verde Lima/Claro
     cyan: '#4FC3F7', // Azul Turquesa/Cian
@@ -29,6 +28,20 @@ export const FontSize = {
     medium: 16,
     large: 18,
     xlarge: 24,
+    xxxlarge: 32,
+};
+
+export const BorderRadius = {
+    small: 4,
+    medium: 8,
+    large: 12,
+    xlarge: 16,
+    full: 9999,
 };
 
 export * from './storage';
+// API Configuration
+export const API_CONFIG = {
+    BASE_URL: 'http://localhost:8080',
+    TIMEOUT: 10000,
+};
