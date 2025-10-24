@@ -44,5 +44,8 @@ pnpm-workspace.yaml
 pnpm-lock.yaml
 
 scripts/diff.ps1
+scripts
 
 .vscode
+
+.env

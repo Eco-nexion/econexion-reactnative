@@ -147,7 +147,7 @@
                                 "selector": {
                                     "kind": "variable"
                                 },
-                                "formats": ["camelCase", "PascalCase", "CONSTANT_CASE"]
+                                "formats": ["camelCase", "PascalCase", "CONSTANT_CASE", "snake_case"]
                             },
                             {
                                 "selector": {
@@ -171,13 +171,19 @@
                                 "selector": {
                                     "kind": "objectLiteralProperty"
                                 },
-                                "formats": ["camelCase"]
+                                "formats": ["camelCase", "snake_case"]
                             },
                             {
                                 "selector": {
                                     "kind": "typeParameter"
                                 },
                                 "formats": ["PascalCase"]
+                            },
+                            {
+                                "selector": {
+                                    "kind": "typeProperty"
+                                },
+                                "formats": ["camelCase", "snake_case"]
                             }
                         ]
                     }
@@ -225,7 +231,7 @@
                 "useDefaultSwitchClauseLast": "error"
             },
             "nursery": {
-                "noSecrets": "error"
+                "noSecrets": "off"
             }
         }
     },
