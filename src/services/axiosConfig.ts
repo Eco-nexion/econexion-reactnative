@@ -1,5 +1,7 @@
-import axios from 'axios';
+/** biome-ignore-all lint/style/useNamingConvention: <explanation> */
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 // Base URL del backend
 const API_BASE_URL = 'http://localhost:8080/api';

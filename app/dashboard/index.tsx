@@ -1,145 +1,86 @@
-import React, { useContext, useEffect, useState } from 'react';
-import {
-    View,
-    Text,
-    StyleSheet,
-    ScrollView,
-    Image,
-    Pressable,
-    ActivityIndicator,
-    RefreshControl,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';import { Colors, Spacing, FontSize } from '@/src/constants';
-import OffersService, { Offer } from '@/src/services/offersService';
+import { Colors, FontSize, Spacing } from '@constants';
 import { useRouter } from 'expo-router';
+import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function GeneratorDashboard() {
+export default function DashboardScreen() {
     const router = useRouter();
-    const [receivedOffers, setReceivedOffers] = useState<Offer[]>([]);
-    const [completedOffers, setCompletedOffers] = useState<Offer[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [refreshing, setRefreshing] = useState(false);
 
-    useEffect(() => {
-        loadOffers();
-    }, []);
+    const menuItems = [
+        { id: 1, title: 'Productos', icon: '📦', route: '/dashboard/products', color: '#4CAF50' },
+        { id: 2, title: 'Mis Pedidos', icon: '🛒', route: '/dashboard/orders', color: '#2196F3' },
+        { id: 3, title: 'Centro de Reciclaje', icon: '♻️', route: '/dashboard/recycling', color: '#FF9800' },
+        { id: 4, title: 'Chat EcoBot', icon: '🤖', route: '/chat', color: '#9C27B0' },
+    ];
 
-    const loadOffers = async () => {
-        try {
-            const offers = await OffersService.getReceivedOffers();
-            const pending = offers.filter(o => o.status === 'PENDING' || o.status === 'ACCEPTED');
-            const completed = offers.filter(o => o.status === 'COMPLETED' || o.status === 'REJECTED');
-
-            setReceivedOffers(pending);
-            setCompletedOffers(completed);
-        } catch (error) {
-            console.error('Error loading offers:', error);
-        } finally {
-            setLoading(false);
-            setRefreshing(false);
-        }
-    };
-
-    const onRefresh = () => {
-        setRefreshing(true);
-        loadOffers();
-    };
-
-    if (loading) {
-        return (
-            <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color={Colors.ecoGreen} />
-            </View>
-        );
-    }
+    const stats = [
+        { label: 'Compras', value: '12', icon: '🛍️' },
+        { label: 'Ahorrado', value: '$45k', icon: '💰' },
+        { label: 'CO₂ Reducido', value: '28kg', icon: '🌱' },
+    ];
 
     return (
-        <SafeAreaView style={styles.safeArea} edges={['top']}>
+        <SafeAreaView style={styles.container} edges={['top']}>
+            {/* Header */}
             <View style={styles.header}>
-                <Text style={styles.headerTitle}>Econexión</Text>
-                <Pressable style={styles.notificationBtn}>
-                    <Text style={styles.notificationIcon}></Text>
-                </Pressable>
+                <View style={styles.headerContent}>
+                    <View>
+                        <Text style={styles.greeting}>¡Hola! 👋</Text>
+                        <Text style={styles.userName}>Juan Pablo</Text>
+                    </View>
+                    <Pressable onPress={() => router.push('/profile')} style={styles.profileButton}>
+                        <Image source={require('@assets/images/icon.png')} style={styles.avatar} resizeMode='contain' />
+                    </Pressable>
+                </View>
             </View>
 
-            <ScrollView
-                style={styles.container}
-                refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                }
-            >
-                <Text style={styles.mainTitle}>Panel de Control</Text>
+            <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+                {/* Stats Cards */}
+                <View style={styles.statsContainer}>
+                    {stats.map((stat, index) => (
+                        <View key={index} style={styles.statCard}>
+                            <Text style={styles.statIcon}>{stat.icon}</Text>
+                            <Text style={styles.statValue}>{stat.value}</Text>
+                            <Text style={styles.statLabel}>{stat.label}</Text>
+                        </View>
+                    ))}
+                </View>
 
-                {/* Crear Publicación Card */}
-                <View style={styles.createPostCard}>
-                    <Image
-                        source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB2LCO_sG-Pmu9Z7ew20FLtWYIawbEgIr9s_rb2JOWGkLp09BtnwdLpHtR-GM4wbpWPml5ZXJ9FleW6dvTGFrgmYrsIwUK9ML-v-jf5h9QFqlPGXVMcUCHDEJr8bCOXIE5v_l-2T6PAoH8b9GqmNaty9BoTZo9bU_5Y1lk0KjUrx-mU5jA1nPuVc2wQzsm47hO7oSMNJlkN2TqT_CSq8UfJKn0vGX4Lg7Z95ZDEKDqeznGFOGCOVVjTLKM10qkB_y9-FnYBCJ1XBbFh' }}
-                        style={styles.createPostImage}
-                        resizeMode="cover"
-                    />
-                    <View style={styles.createPostContent}>
-                        <Text style={styles.createPostTitle}>Publicar Lote</Text>
-                        <Text style={styles.createPostSubtitle}>
-                            Crea una nueva publicación para tus residuos y encuentra compradores.
-                        </Text>
-                        <Pressable
-                            style={styles.createBtn}
-                            //onPress={() => router.push('/dashboard/publish')}
-                        >
-                            <Text style={styles.createBtnText}>Crear</Text>
+                {/* Menu Grid */}
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Servicios</Text>
+                    <View style={styles.menuGrid}>
+                        {menuItems.map((item) => (
+                            <Pressable
+                                key={item.id}
+                                style={[styles.menuCard, { backgroundColor: item.color }]}
+                                onPress={() => router.push(item.route as any)}
+                            >
+                                <Text style={styles.menuIcon}>{item.icon}</Text>
+                                <Text style={styles.menuTitle}>{item.title}</Text>
+                            </Pressable>
+                        ))}
+                    </View>
+                </View>
+
+                {/* Quick Actions */}
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Acciones Rápidas</Text>
+                    <View style={styles.actionsContainer}>
+                        <Pressable style={styles.actionButton} onPress={() => router.push('/dashboard/search')}>
+                            <Text style={styles.actionIcon}>🔍</Text>
+                            <Text style={styles.actionText}>Buscar Productos</Text>
+                        </Pressable>
+                        <Pressable style={styles.actionButton} onPress={() => router.push('/dashboard/recycling')}>
+                            <Text style={styles.actionIcon}>📍</Text>
+                            <Text style={styles.actionText}>Puntos de Reciclaje</Text>
                         </Pressable>
                     </View>
                 </View>
 
-                {/* Ofertas Recibidas */}
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Ofertas Recibidas</Text>
-                    {receivedOffers.length === 0 ? (
-                        <Text style={styles.emptyText}>No tienes ofertas pendientes</Text>
-                    ) : (
-                        receivedOffers.map((offer) => (
-                            <Pressable
-                                key={offer.id}
-                                style={styles.offerCard}
-                                //onPress={() => router.push(`/dashboard/offers?id=${offer.id}`)}
-                            >
-                                <Image
-                                    source={{ uri: offer.post?.imageUrl || 'https://via.placeholder.com/56' }}
-                                    style={styles.offerImage}
-                                />
-                                <View style={styles.offerInfo}>
-                                    <Text style={styles.offerTitle}>{offer.post?.title || 'Lote'}</Text>
-                                    <Text style={styles.offerSubtitle}>{offer.user?.name || 'Comprador'}</Text>
-                                </View>
-                                <Text style={styles.offerPrice}>${offer.amount}</Text>
-                            </Pressable>
-                        ))
-                    )}
-                </View>
-
-                {/* Ofertas Terminadas */}
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Ofertas Terminadas</Text>
-                    {completedOffers.length === 0 ? (
-                        <Text style={styles.emptyText}>No hay ofertas terminadas</Text>
-                    ) : (
-                        completedOffers.map((offer) => (
-                            <Pressable
-                                key={offer.id}
-                                style={[styles.offerCard, styles.offerCardCompleted]}
-                            >
-                                <Image
-                                    source={{ uri: offer.post?.imageUrl || 'https://via.placeholder.com/56' }}
-                                    style={styles.offerImage}
-                                />
-                                <View style={styles.offerInfo}>
-                                    <Text style={styles.offerTitle}>{offer.post?.title || 'Lote'}</Text>
-                                    <Text style={styles.offerSubtitle}>{offer.user?.name || 'Comprador'}</Text>
-                                </View>
-                                <Text style={styles.offerPriceCompleted}>${offer.amount}</Text>
-                            </Pressable>
-                        ))
-                    )}
+                {/* Footer */}
+                <View style={styles.footer}>
+                    <Text style={styles.footerText}>Contribuyendo al planeta 🌍</Text>
                 </View>
             </ScrollView>
         </SafeAreaView>
@@ -147,146 +88,154 @@ export default function GeneratorDashboard() {
 }
 
 const styles = StyleSheet.create({
-    safeArea: {
-        flex: 1,
-        backgroundColor: '#f6f8f6',
-    },
-    loadingContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingHorizontal: Spacing.lg,
-        paddingVertical: Spacing.md,
-        backgroundColor: '#f6f8f6cc',
-        borderBottomWidth: 1,
-        borderBottomColor: '#20df2633',
-    },
-    headerTitle: {
-        fontSize: 20,
-        fontWeight: '700',
-        color: '#111',
-        flex: 1,
-        textAlign: 'center',
-    },
-    notificationBtn: {
-        padding: 8,
-        borderRadius: 20,
-    },
-    notificationIcon: {
-        fontSize: 20,
-    },
     container: {
         flex: 1,
-        padding: Spacing.lg,
+        backgroundColor: '#F5F5F5',
     },
-    mainTitle: {
-        fontSize: 24,
-        fontWeight: '700',
-        color: '#111',
-        marginBottom: Spacing.lg,
-    },
-    createPostCard: {
-        backgroundColor: '#fff',
-        borderRadius: 12,
-        overflow: 'hidden',
-        marginBottom: Spacing.lg,
+    header: {
+        backgroundColor: Colors.ecoGreen,
+        paddingHorizontal: Spacing.lg,
+        paddingVertical: Spacing.lg,
+        borderBottomLeftRadius: 24,
+        borderBottomRightRadius: 24,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 4,
         elevation: 3,
     },
-    createPostImage: {
-        width: '100%',
-        height: 160,
+    headerContent: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
     },
-    createPostContent: {
-        padding: Spacing.lg,
-    },
-    createPostTitle: {
-        fontSize: 18,
-        fontWeight: '700',
-        color: '#111',
+    greeting: {
+        fontSize: 16,
+        color: '#E0F2E9',
         marginBottom: 4,
     },
-    createPostSubtitle: {
-        fontSize: 14,
-        color: '#666',
-        marginBottom: Spacing.md,
-    },
-    createBtn: {
-        backgroundColor: Colors.ecoGreen,
-        paddingVertical: Spacing.sm,
-        borderRadius: 8,
-        alignItems: 'center',
-    },
-    createBtnText: {
-        color: '#000',
+    userName: {
+        fontSize: 24,
         fontWeight: '700',
-        fontSize: FontSize.medium,
+        color: '#fff',
     },
-    section: {
-        marginBottom: Spacing.xl,
-    },
-    sectionTitle: {
-        fontSize: 20,
-        fontWeight: '700',
-        color: '#111',
-        marginBottom: Spacing.md,
-    },
-    emptyText: {
-        color: '#999',
-        textAlign: 'center',
-        paddingVertical: Spacing.lg,
-    },
-    offerCard: {
-        flexDirection: 'row',
-        alignItems: 'center',
+    profileButton: {
+        width: 56,
+        height: 56,
+        borderRadius: 28,
         backgroundColor: '#fff',
+        overflow: 'hidden',
+        borderWidth: 3,
+        borderColor: 'rgba(255,255,255,0.3)',
+    },
+    avatar: {
+        width: '100%',
+        height: '100%',
+    },
+    content: {
+        flex: 1,
+    },
+    statsContainer: {
+        flexDirection: 'row',
+        paddingHorizontal: Spacing.lg,
+        paddingVertical: Spacing.lg,
+        gap: Spacing.md,
+    },
+    statCard: {
+        flex: 1,
+        backgroundColor: '#fff',
+        borderRadius: 16,
         padding: Spacing.md,
-        borderRadius: 8,
-        marginBottom: Spacing.sm,
+        alignItems: 'center',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.05,
         shadowRadius: 2,
+        elevation: 1,
+    },
+    statIcon: {
+        fontSize: 32,
+        marginBottom: 8,
+    },
+    statValue: {
+        fontSize: 20,
+        fontWeight: '700',
+        color: '#333',
+        marginBottom: 4,
+    },
+    statLabel: {
+        fontSize: 12,
+        color: Colors.gray,
+    },
+    section: {
+        paddingHorizontal: Spacing.lg,
+        marginBottom: Spacing.lg,
+    },
+    sectionTitle: {
+        fontSize: 20,
+        fontWeight: '700',
+        color: '#333',
+        marginBottom: Spacing.md,
+    },
+    menuGrid: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: Spacing.md,
+    },
+    menuCard: {
+        width: '48%',
+        aspectRatio: 1.2,
+        borderRadius: 16,
+        padding: Spacing.lg,
+        justifyContent: 'center',
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
         elevation: 2,
     },
-    offerCardCompleted: {
-        opacity: 0.7,
+    menuIcon: {
+        fontSize: 48,
+        marginBottom: Spacing.sm,
     },
-    offerImage: {
-        width: 56,
-        height: 56,
-        borderRadius: 8,
+    menuTitle: {
+        fontSize: 16,
+        fontWeight: '700',
+        color: '#fff',
+        textAlign: 'center',
+    },
+    actionsContainer: {
+        gap: Spacing.md,
+    },
+    actionButton: {
+        backgroundColor: '#fff',
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: Spacing.lg,
+        borderRadius: 12,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.05,
+        shadowRadius: 2,
+        elevation: 1,
+    },
+    actionIcon: {
+        fontSize: 24,
         marginRight: Spacing.md,
     },
-    offerInfo: {
-        flex: 1,
-    },
-    offerTitle: {
-        fontSize: 16,
+    actionText: {
+        fontSize: FontSize.medium,
         fontWeight: '600',
-        color: '#111',
-        marginBottom: 2,
+        color: '#333',
     },
-    offerSubtitle: {
+    footer: {
+        alignItems: 'center',
+        paddingVertical: Spacing.xl,
+    },
+    footerText: {
         fontSize: 14,
-        color: '#666',
-    },
-    offerPrice: {
-        fontSize: 18,
-        fontWeight: '700',
-        color: Colors.ecoGreen,
-    },
-    offerPriceCompleted: {
-        fontSize: 18,
-        fontWeight: '600',
-        color: '#666',
+        color: Colors.gray,
+        fontStyle: 'italic',
     },
 });

@@ -41,8 +41,8 @@ export default function Login() {
         const mockResponse = {
             user: {
                 id: 'mock-user-id-123',
-                email: 'Econexion@example.com',
-                name: 'Econexion Mock',
+                email: 'juanpablocamargo9@gmail.com',
+                name: 'Juan Pablo',
                 user_type: 'vende',
             },
             token: 'mock-jwt-token-econexion-abc123xyz',
@@ -52,7 +52,7 @@ export default function Login() {
         await storage.setItem(STORAGE_KEYS.user_email, mockResponse.user.email);
         await storage.setItem(STORAGE_KEYS.user_type, mockResponse.user.user_type);
 
-        router.replace('/');
+        router.replace('/chat');
     };
 
     return (
