@@ -2,7 +2,7 @@ import { Colors, FontSize, Spacing, STORAGE_KEYS } from '@constants';
 import { storage } from '@utils';
 import { makeRedirectUri } from 'expo-auth-session';
 import * as Google from 'expo-auth-session/providers/google';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { useEffect, useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
@@ -18,6 +18,7 @@ interface GoogleAuthParams {
 }
 
 export default function Home() {
+    const router = useRouter();
     const [authError, setAuthError] = useState<string | null>(null);
     const [isExchanging, setIsExchanging] = useState(false);
 
@@ -37,6 +38,8 @@ export default function Home() {
         usePKCE: false,
         selectAccount: true,
     });
+
+    const { replace } = router;
 
     useEffect(() => {
         if (!response) {
@@ -75,6 +78,8 @@ export default function Home() {
                 await storage.setItem(STORAGE_KEYS.user_name, mockResponse.user.name);
                 await storage.setItem(STORAGE_KEYS.user_email, mockResponse.user.email);
                 await storage.setItem(STORAGE_KEYS.user_type, mockResponse.user.user_type);
+
+                replace('/(tabs)');
             }, 1000);
         } else if (response.type === 'error') {
             setIsExchanging(false);
@@ -86,7 +91,7 @@ export default function Home() {
         } else if (response.type === 'dismiss') {
             setIsExchanging(false);
         }
-    }, [response]);
+    }, [response, replace]);
 
     return (
         <SafeAreaView style={styles.safeArea}>

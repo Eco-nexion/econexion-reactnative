@@ -52,7 +52,7 @@ export default function Login() {
         await storage.setItem(STORAGE_KEYS.user_email, mockResponse.user.email);
         await storage.setItem(STORAGE_KEYS.user_type, mockResponse.user.user_type);
 
-        router.replace('/');
+        router.replace('/(tabs)' as any);
     };
 
     return (
