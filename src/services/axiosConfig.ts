@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { storage } from '@utils/storage';
+import {STORAGE_KEYS} from "@constants";
 
 // Base URL del backend (actualizado a puerto 35000)
 const API_BASE_URL = 'http://localhost:35000';
@@ -17,18 +18,17 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
     async (config) => {
         try {
-            const token = await storage.getItem('auth_token');
+            const token = await storage.getItem(STORAGE_KEYS.token);
+            console.log('Interceptor token:', token ? 'Present' : 'Missing');  // Debug
             if (token) {
                 config.headers.Authorization = `Bearer ${token}`;
             }
         } catch (error) {
-            console.error('Error getting token:', error);
+            console.error('Interceptor storage error:', error);
         }
         return config;
     },
-    (error) => {
-        return Promise.reject(error);
-    }
+    (error) => Promise.reject(error)
 );
 
 // Interceptor para manejar respuestas y errores

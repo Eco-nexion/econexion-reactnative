@@ -85,6 +85,7 @@ export const AuthService = {
 
         // Almacenar en storage
         await storage.setItem(STORAGE_KEYS.token, token);
+        console.log('Token stored:', token.substring(0, 20) + '...');
         await storage.setItem(STORAGE_KEYS.user_name, parsedUser.name);
         await storage.setItem(STORAGE_KEYS.user_email, parsedUser.email);
         await storage.setItem(STORAGE_KEYS.user_id, parsedUser.id);
