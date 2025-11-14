@@ -126,7 +126,7 @@ El proyecto requiere el backend de Econexion corriendo:
 http://localhost:8080
 ```
 
-Repositorio del backend: [econexion-app](https://github.com/Eco-nexion/econexion-app)
+Repositorio del backend: [Econexion-back](https://github.com/Eco-nexion/Econexion-back)
 
 ---
 
@@ -135,14 +135,14 @@ Repositorio del backend: [econexion-app](https://github.com/Eco-nexion/econexion
 ### 1️⃣ Clonar el Repositorio
 
 ```bash
-git clone https://github.com/Eco-nexion/econexion-reactnative.git
-cd econexion-reactnative
+git clone https://github.com/Eco-nexion/Econexion-front.git
+cd Econexion-front
 ```
 
 ### 2️⃣ Cambiar a la Rama de Desarrollo
 
 ```bash
-git checkout feature/dashboard-page
+git checkout develop
 ```
 
 ### 3️⃣ Instalar Dependencias
