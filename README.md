@@ -156,14 +156,9 @@ pnpm install
 Crea un archivo `.env.local` en la raíz del proyecto:
 
 ```env
-# URL del backend
-API_BASE_URL=http://localhost:8080/api
-
-# Para Android Emulator usar:
-# API_BASE_URL=http://10.0.2.2:8080/api
-
-# Para dispositivo físico usar tu IP local:
-# API_BASE_URL=http://192.168.1.XXX:8080/api
+EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID=587933647930-5655phuhtfgo9ska2i9euumigl3eh5in.apps.googleusercontent.com
+EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID=587933647930-b0u33ajp7v0n07nouluofcgfm1cah7b2.apps.googleusercontent.com
+EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID=587933647930-gtqf8tlukjfllhfqfctc5jvot80oe73b.apps.googleusercontent.com
 ```
 
 ### 5️⃣ Iniciar el Servidor de Desarrollo
