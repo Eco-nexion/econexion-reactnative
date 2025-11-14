@@ -1,6 +1,5 @@
-import { STORAGE_KEYS } from '@constants';
-import { storage } from '@utils';
-import { Link, useRouter } from 'expo-router';
+import { useAuth } from '@/src/contexts/AuthContext';
+import { Link } from 'expo-router';
 import { useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -24,7 +23,7 @@ const FontSize = {
 };
 
 export default function Login() {
-    const router = useRouter();
+    const { login } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -47,12 +46,13 @@ export default function Login() {
             },
             token: 'mock-jwt-token-econexion-abc123xyz',
         };
-        await storage.setItem(STORAGE_KEYS.token, mockResponse.token);
-        await storage.setItem(STORAGE_KEYS.user_name, mockResponse.user.name);
-        await storage.setItem(STORAGE_KEYS.user_email, mockResponse.user.email);
-        await storage.setItem(STORAGE_KEYS.user_type, mockResponse.user.user_type);
 
-        router.replace('/(tabs)' as any);
+        // Usar el contexto de Auth para login (guarda y redirige automáticamente)
+        await login(mockResponse.token, {
+            name: mockResponse.user.name,
+            email: mockResponse.user.email,
+            userType: mockResponse.user.user_type,
+        });
     };
 
     return (

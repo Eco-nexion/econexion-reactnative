@@ -1,15 +1,15 @@
+import { useAuth } from '@/src/contexts/AuthContext';
 import type { UserData } from '@/src/types';
 import { USER_TYPE_LABELS } from '@/src/types';
 import { BorderRadius, Colors, FontSize, Spacing, STORAGE_KEYS } from '@constants';
 import { Ionicons } from '@expo/vector-icons';
 import { storage } from '@utils';
-import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ProfileTab() {
-    const router = useRouter();
+    const { logout } = useAuth();
     const [userData, setUserData] = useState<UserData>({
         name: '',
         email: '',
@@ -28,11 +28,7 @@ export default function ProfileTab() {
     }, []);
 
     const handleLogout = async () => {
-        await storage.removeItem(STORAGE_KEYS.token);
-        await storage.removeItem(STORAGE_KEYS.user_name);
-        await storage.removeItem(STORAGE_KEYS.user_email);
-        await storage.removeItem(STORAGE_KEYS.user_type);
-        router.replace('/');
+        await logout();
     };
 
     const getUserTypeLabel = (type: string) => {

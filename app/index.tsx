@@ -1,8 +1,8 @@
-import { Colors, FontSize, Spacing, STORAGE_KEYS } from '@constants';
-import { storage } from '@utils';
+import { useAuth } from '@/src/contexts/AuthContext';
+import { Colors, FontSize, Spacing } from '@constants';
 import { makeRedirectUri } from 'expo-auth-session';
 import * as Google from 'expo-auth-session/providers/google';
-import { Link, useRouter } from 'expo-router';
+import { Link } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { useEffect, useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
@@ -18,7 +18,7 @@ interface GoogleAuthParams {
 }
 
 export default function Home() {
-    const router = useRouter();
+    const { login } = useAuth();
     const [authError, setAuthError] = useState<string | null>(null);
     const [isExchanging, setIsExchanging] = useState(false);
 
@@ -38,8 +38,6 @@ export default function Home() {
         usePKCE: false,
         selectAccount: true,
     });
-
-    const { replace } = router;
 
     useEffect(() => {
         if (!response) {
@@ -71,15 +69,14 @@ export default function Home() {
                 token: 'mock-jwt-token-google-abc123xyz',
             };
 
-            // Simular delay de red
+            // Simular delay de red y luego usar el contexto de Auth
             setTimeout(async () => {
                 console.log('Mock response:', mockResponse);
-                await storage.setItem(STORAGE_KEYS.token, mockResponse.token);
-                await storage.setItem(STORAGE_KEYS.user_name, mockResponse.user.name);
-                await storage.setItem(STORAGE_KEYS.user_email, mockResponse.user.email);
-                await storage.setItem(STORAGE_KEYS.user_type, mockResponse.user.user_type);
-
-                replace('/(tabs)');
+                await login(mockResponse.token, {
+                    name: mockResponse.user.name,
+                    email: mockResponse.user.email,
+                    userType: mockResponse.user.user_type,
+                });
             }, 1000);
         } else if (response.type === 'error') {
             setIsExchanging(false);
@@ -91,7 +88,7 @@ export default function Home() {
         } else if (response.type === 'dismiss') {
             setIsExchanging(false);
         }
-    }, [response, replace]);
+    }, [response, login]);
 
     return (
         <SafeAreaView style={styles.safeArea}>
