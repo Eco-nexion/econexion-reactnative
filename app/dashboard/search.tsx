@@ -15,9 +15,11 @@ import { Colors, Spacing, FontSize } from '@/src/constants';
 import PostsService, { Post } from '@/src/services/postsService';
 import OffersService, { Offer } from '@/src/services/offersService';
 import { useRouter } from 'expo-router';
+import { useAuth } from '@/src/contexts/AuthContext';  // Nuevo: Import para signOut
 
 export default function RecyclerDashboard() {
     const router = useRouter();
+    const { signOut } = useAuth();  // Nuevo: Hook para logout
     const [posts, setPosts] = useState<Post[]>([]);
     const [pendingOffers, setPendingOffers] = useState<Offer[]>([]);
     const [completedOffers, setCompletedOffers] = useState<Offer[]>([]);
@@ -57,6 +59,10 @@ export default function RecyclerDashboard() {
         loadData();
     };
 
+    const handleLogout = async () => {
+        await signOut();
+    };
+
     const filteredPosts = posts.filter(post =>
         post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         post.wasteType.toLowerCase().includes(searchQuery.toLowerCase())
@@ -77,7 +83,12 @@ export default function RecyclerDashboard() {
                     <Text style={styles.menuIcon}>☰</Text>
                 </Pressable>
                 <Text style={styles.headerTitle}>Panel de Control</Text>
-                <View style={{ width: 40 }} />
+                <View style={styles.headerActions}>  {/* Nuevo: Contenedor para actions */}
+                    <View style={{ width: 40 }} />  {/* Placeholder para balancear */}
+                    <Pressable onPress={handleLogout} style={styles.logoutBtn}>  {/* Nuevo: Botón logout */}
+                        <Text style={styles.logoutText}>Logout</Text>
+                    </Pressable>
+                </View>
             </View>
 
             <ScrollView
@@ -207,6 +218,20 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: '700',
         color: '#111',
+    },
+    headerActions: {  // Nuevo: Para alinear actions
+        flexDirection: 'row',
+        gap: Spacing.sm,
+    },
+    logoutBtn: {  // Nuevo: Estilo para botón logout
+        padding: 8,
+        borderRadius: 20,
+        backgroundColor: Colors.lightGray,
+    },
+    logoutText: {
+        fontSize: FontSize.small,
+        color: '#111',
+        fontWeight: '600',
     },
     container: {
         flex: 1,

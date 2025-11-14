@@ -9,12 +9,15 @@ import {
     ActivityIndicator,
     RefreshControl,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';import { Colors, Spacing, FontSize } from '@/src/constants';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Colors, Spacing, FontSize } from '@/src/constants';
 import OffersService, { Offer } from '@/src/services/offersService';
 import { useRouter } from 'expo-router';
+import { useAuth } from '@/src/contexts/AuthContext';  // Nuevo: Import para signOut
 
 export default function GeneratorDashboard() {
     const router = useRouter();
+    const { signOut } = useAuth();  // Nuevo: Hook para logout
     const [receivedOffers, setReceivedOffers] = useState<Offer[]>([]);
     const [completedOffers, setCompletedOffers] = useState<Offer[]>([]);
     const [loading, setLoading] = useState(true);
@@ -45,6 +48,10 @@ export default function GeneratorDashboard() {
         loadOffers();
     };
 
+    const handleLogout = async () => {
+        await signOut();
+    };
+
     if (loading) {
         return (
             <View style={styles.loadingContainer}>
@@ -57,9 +64,14 @@ export default function GeneratorDashboard() {
         <SafeAreaView style={styles.safeArea} edges={['top']}>
             <View style={styles.header}>
                 <Text style={styles.headerTitle}>Econexión</Text>
-                <Pressable style={styles.notificationBtn}>
-                    <Text style={styles.notificationIcon}></Text>
-                </Pressable>
+                <View style={styles.headerActions}>  {/* Nuevo: Contenedor para actions */}
+                    <Pressable style={styles.notificationBtn}>
+                        <Text style={styles.notificationIcon}></Text>
+                    </Pressable>
+                    <Pressable onPress={handleLogout} style={styles.logoutBtn}>  {/* Nuevo: Botón logout */}
+                        <Text style={styles.logoutText}>Logout</Text>
+                    </Pressable>
+                </View>
             </View>
 
             <ScrollView
@@ -173,12 +185,26 @@ const styles = StyleSheet.create({
         flex: 1,
         textAlign: 'center',
     },
+    headerActions: {  // Nuevo: Para alinear actions
+        flexDirection: 'row',
+        gap: Spacing.sm,
+    },
     notificationBtn: {
         padding: 8,
         borderRadius: 20,
     },
     notificationIcon: {
         fontSize: 20,
+    },
+    logoutBtn: {  // Nuevo: Estilo para botón logout
+        padding: 8,
+        borderRadius: 20,
+        backgroundColor: Colors.lightGray,
+    },
+    logoutText: {
+        fontSize: FontSize.small,
+        color: '#111',
+        fontWeight: '600',
     },
     container: {
         flex: 1,
