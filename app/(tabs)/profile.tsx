@@ -1,67 +1,347 @@
-import { Colors, Spacing, STORAGE_KEYS } from '@constants';
+import type { UserData } from '@/src/types';
+import { USER_TYPE_LABELS } from '@/src/types';
+import { BorderRadius, Colors, FontSize, Spacing, STORAGE_KEYS } from '@constants';
+import { Ionicons } from '@expo/vector-icons';
 import { storage } from '@utils';
 import { useRouter } from 'expo-router';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ProfileTab() {
-	const router = useRouter();
+    const router = useRouter();
+    const [userData, setUserData] = useState<UserData>({
+        name: '',
+        email: '',
+        userType: '',
+    });
 
-	const handleLogout = async () => {
-		await storage.removeItem(STORAGE_KEYS.token);
-		await storage.removeItem(STORAGE_KEYS.user_name);
-		await storage.removeItem(STORAGE_KEYS.user_email);
-		await storage.removeItem(STORAGE_KEYS.user_type);
-		router.replace('/');
-	};
+    useEffect(() => {
+        const loadUserData = async () => {
+            const name = (await storage.getItem(STORAGE_KEYS.user_name)) || 'Usuario';
+            const email = (await storage.getItem(STORAGE_KEYS.user_email)) || 'correo@ejemplo.com';
+            const userType = (await storage.getItem(STORAGE_KEYS.user_type)) || 'usuario';
+            setUserData({ name, email, userType });
+        };
 
-	return (
-		<SafeAreaView style={styles.safeArea} edges={['bottom']}>
-			<View style={styles.container}>
-				<Text style={styles.title}>Perfil</Text>
-				<Text style={styles.subtitle}>Gestiona tu cuenta y preferencias</Text>
+        loadUserData();
+    }, []);
 
-				<Pressable style={styles.logoutButton} onPress={handleLogout}>
-					<Text style={styles.logoutText}>Cerrar Sesión</Text>
-				</Pressable>
-			</View>
-		</SafeAreaView>
-	);
+    const handleLogout = async () => {
+        await storage.removeItem(STORAGE_KEYS.token);
+        await storage.removeItem(STORAGE_KEYS.user_name);
+        await storage.removeItem(STORAGE_KEYS.user_email);
+        await storage.removeItem(STORAGE_KEYS.user_type);
+        router.replace('/');
+    };
+
+    const getUserTypeLabel = (type: string) => {
+        return USER_TYPE_LABELS[type] || type;
+    };
+
+    const getInitials = (name: string) => {
+        return name
+            .split(' ')
+            .map((n) => n[0])
+            .join('')
+            .toUpperCase()
+            .slice(0, 2);
+    };
+
+    return (
+        <SafeAreaView style={styles.safeArea} edges={['bottom']}>
+            <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+                {/* Header con avatar y datos */}
+                <View style={styles.header}>
+                    <View style={styles.avatarContainer}>
+                        <View style={styles.avatar}>
+                            <Text style={styles.avatarText}>{getInitials(userData.name)}</Text>
+                        </View>
+                    </View>
+                    <Text style={styles.userName}>{userData.name}</Text>
+                    <Text style={styles.userEmail}>{userData.email}</Text>
+                    <View style={styles.badge}>
+                        <Text style={styles.badgeText}>{getUserTypeLabel(userData.userType)}</Text>
+                    </View>
+                </View>
+
+                {/* Sección Cuenta */}
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Mi Cuenta</Text>
+                    <View style={styles.card}>
+                        <SettingItem
+                            icon='person-outline'
+                            title='Información Personal'
+                            subtitle='Edita tu nombre, foto de perfil'
+                            onPress={() => console.log('Información Personal')}
+                        />
+                        <Divider />
+                        <SettingItem
+                            icon='mail-outline'
+                            title='Correo Electrónico'
+                            subtitle={userData.email}
+                            onPress={() => console.log('Correo')}
+                        />
+                        <Divider />
+                        <SettingItem
+                            icon='lock-closed-outline'
+                            title='Contraseña'
+                            subtitle='Cambia tu contraseña'
+                            onPress={() => console.log('Contraseña')}
+                        />
+                    </View>
+                </View>
+
+                {/* Sección Configuración */}
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Configuración</Text>
+                    <View style={styles.card}>
+                        <SettingItem
+                            icon='notifications-outline'
+                            title='Notificaciones'
+                            subtitle='Gestiona tus alertas'
+                            onPress={() => console.log('Notificaciones')}
+                        />
+                        <Divider />
+                        <SettingItem
+                            icon='shield-checkmark-outline'
+                            title='Privacidad'
+                            subtitle='Controla tu información'
+                            onPress={() => console.log('Privacidad')}
+                        />
+                        <Divider />
+                        <SettingItem
+                            icon='language-outline'
+                            title='Idioma'
+                            subtitle='Español'
+                            onPress={() => console.log('Idioma')}
+                        />
+                    </View>
+                </View>
+
+                {/* Sección Sostenibilidad */}
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Sostenibilidad</Text>
+                    <View style={styles.card}>
+                        <SettingItem
+                            icon='leaf-outline'
+                            title='Mis Iniciativas'
+                            subtitle='Proyectos ecológicos'
+                            onPress={() => console.log('Iniciativas')}
+                            iconColor={Colors.ecoGreen}
+                        />
+                        <Divider />
+                        <SettingItem
+                            icon='stats-chart-outline'
+                            title='Impacto Ambiental'
+                            subtitle='Revisa tu contribución'
+                            onPress={() => console.log('Impacto')}
+                            iconColor={Colors.ecoGreen}
+                        />
+                    </View>
+                </View>
+
+                {/* Sección Soporte */}
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Soporte</Text>
+                    <View style={styles.card}>
+                        <SettingItem
+                            icon='help-circle-outline'
+                            title='Ayuda y Soporte'
+                            subtitle='Centro de ayuda'
+                            onPress={() => console.log('Ayuda')}
+                        />
+                        <Divider />
+                        <SettingItem
+                            icon='information-circle-outline'
+                            title='Acerca de Econexion'
+                            subtitle='Versión 1.0.0'
+                            onPress={() => console.log('Acerca de')}
+                        />
+                    </View>
+                </View>
+
+                {/* Botón Cerrar Sesión */}
+                <View style={styles.section}>
+                    <Pressable style={styles.logoutButton} onPress={handleLogout}>
+                        <Ionicons name='log-out-outline' size={20} color='#fff' />
+                        <Text style={styles.logoutText}>Cerrar Sesión</Text>
+                    </Pressable>
+                </View>
+
+                <View style={styles.footer}>
+                    <Text style={styles.footerText}>Econexion © 2025</Text>
+                </View>
+            </ScrollView>
+        </SafeAreaView>
+    );
+}
+
+interface SettingItemProps {
+    icon: keyof typeof Ionicons.glyphMap;
+    title: string;
+    subtitle: string;
+    onPress: () => void;
+    iconColor?: string;
+}
+
+function SettingItem({ icon, title, subtitle, onPress, iconColor = Colors.gray }: SettingItemProps) {
+    return (
+        <Pressable style={styles.settingItem} onPress={onPress} android_ripple={{ color: '#f0f0f0' }}>
+            <View style={styles.settingIconContainer}>
+                <Ionicons name={icon} size={24} color={iconColor} />
+            </View>
+            <View style={styles.settingContent}>
+                <Text style={styles.settingTitle}>{title}</Text>
+                <Text style={styles.settingSubtitle}>{subtitle}</Text>
+            </View>
+            <Ionicons name='chevron-forward' size={20} color={Colors.gray} />
+        </Pressable>
+    );
+}
+
+function Divider() {
+    return <View style={styles.divider} />;
 }
 
 const styles = StyleSheet.create({
-	safeArea: {
-		flex: 1,
-		backgroundColor: Colors.lightGray,
-	},
-	container: {
-		flex: 1,
-		padding: Spacing.lg,
-		justifyContent: 'center',
-		alignItems: 'center',
-		gap: Spacing.md,
-	},
-	title: {
-		fontSize: 24,
-		fontWeight: '700',
-		color: Colors.ecoGreen,
-		textAlign: 'center',
-	},
-	subtitle: {
-		fontSize: 16,
-		color: Colors.gray,
-		textAlign: 'center',
-	},
-	logoutButton: {
-		marginTop: Spacing.lg,
-		backgroundColor: '#DC2626',
-		paddingHorizontal: Spacing.lg,
-		paddingVertical: Spacing.md,
-		borderRadius: 10,
-	},
-	logoutText: {
-		color: '#fff',
-		fontWeight: '600',
-		fontSize: 16,
-	},
+    safeArea: {
+        flex: 1,
+        backgroundColor: Colors.lightGray,
+    },
+    scrollView: {
+        flex: 1,
+    },
+    header: {
+        backgroundColor: Colors.ecoGreen,
+        paddingTop: Spacing.xl,
+        paddingBottom: Spacing.xl,
+        alignItems: 'center',
+        borderBottomLeftRadius: BorderRadius.xlarge,
+        borderBottomRightRadius: BorderRadius.xlarge,
+    },
+    avatarContainer: {
+        marginBottom: Spacing.md,
+    },
+    avatar: {
+        width: 80,
+        height: 80,
+        borderRadius: BorderRadius.full,
+        backgroundColor: '#fff',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 3,
+        borderColor: 'rgba(255, 255, 255, 0.3)',
+    },
+    avatarText: {
+        fontSize: FontSize.xxxlarge,
+        fontWeight: '700',
+        color: Colors.ecoGreen,
+    },
+    userName: {
+        fontSize: FontSize.xlarge,
+        fontWeight: '700',
+        color: '#fff',
+        marginBottom: Spacing.xs,
+    },
+    userEmail: {
+        fontSize: FontSize.medium,
+        color: 'rgba(255, 255, 255, 0.9)',
+        marginBottom: Spacing.md,
+    },
+    badge: {
+        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        paddingHorizontal: Spacing.md,
+        paddingVertical: Spacing.xs,
+        borderRadius: BorderRadius.full,
+        borderWidth: 1,
+        borderColor: 'rgba(255, 255, 255, 0.3)',
+    },
+    badgeText: {
+        fontSize: FontSize.small,
+        fontWeight: '600',
+        color: '#fff',
+    },
+    section: {
+        paddingHorizontal: Spacing.md,
+        paddingTop: Spacing.lg,
+    },
+    sectionTitle: {
+        fontSize: FontSize.medium,
+        fontWeight: '700',
+        color: Colors.text,
+        marginBottom: Spacing.sm,
+        paddingLeft: Spacing.xs,
+    },
+    card: {
+        backgroundColor: '#fff',
+        borderRadius: BorderRadius.large,
+        overflow: 'hidden',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.05,
+        shadowRadius: 8,
+        elevation: 2,
+    },
+    settingItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: Spacing.md,
+        minHeight: 64,
+    },
+    settingIconContainer: {
+        width: 40,
+        height: 40,
+        borderRadius: BorderRadius.medium,
+        backgroundColor: Colors.lightGray,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: Spacing.md,
+    },
+    settingContent: {
+        flex: 1,
+    },
+    settingTitle: {
+        fontSize: FontSize.medium,
+        fontWeight: '600',
+        color: Colors.text,
+        marginBottom: Spacing.xs / 2,
+    },
+    settingSubtitle: {
+        fontSize: FontSize.small,
+        color: Colors.gray,
+    },
+    divider: {
+        height: 1,
+        backgroundColor: Colors.lightGray,
+        marginLeft: 72, // Alineado con el texto (40 + 16 + 16)
+    },
+    logoutButton: {
+        flexDirection: 'row',
+        backgroundColor: '#DC2626',
+        paddingVertical: Spacing.md,
+        paddingHorizontal: Spacing.lg,
+        borderRadius: BorderRadius.large,
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: Spacing.sm,
+        shadowColor: '#DC2626',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 4,
+    },
+    logoutText: {
+        color: '#fff',
+        fontWeight: '700',
+        fontSize: FontSize.medium,
+    },
+    footer: {
+        paddingVertical: Spacing.xl,
+        alignItems: 'center',
+    },
+    footerText: {
+        fontSize: FontSize.small,
+        color: Colors.gray,
+    },
 });

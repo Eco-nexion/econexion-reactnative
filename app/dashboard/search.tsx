@@ -31,15 +31,12 @@ export default function RecyclerDashboard() {
 
     const loadData = async () => {
         try {
-            const [allPosts, sentOffers] = await Promise.all([
-                PostsService.getPosts(),
-                OffersService.getSentOffers(),
-            ]);
+            const [allPosts, sentOffers] = await Promise.all([PostsService.getPosts(), OffersService.getSentOffers()]);
 
             setPosts(allPosts);
-            const pending = sentOffers.filter(o => o.status === 'PENDING');
+            const pending = sentOffers.filter((o) => o.status === 'PENDING');
             const completed = sentOffers.filter(
-                o => o.status === 'COMPLETED' || o.status === 'ACCEPTED' || o.status === 'REJECTED'
+                (o) => o.status === 'COMPLETED' || o.status === 'ACCEPTED' || o.status === 'REJECTED'
             );
 
             setPendingOffers(pending);
@@ -57,15 +54,16 @@ export default function RecyclerDashboard() {
         loadData();
     };
 
-    const filteredPosts = posts.filter(post =>
-        post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        post.wasteType.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredPosts = posts.filter(
+        (post) =>
+            post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            post.wasteType.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     if (loading) {
         return (
             <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color={Colors.ecoGreen} />
+                <ActivityIndicator size='large' color={Colors.ecoGreen} />
             </View>
         );
     }
@@ -82,9 +80,7 @@ export default function RecyclerDashboard() {
 
             <ScrollView
                 style={styles.container}
-                refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                }
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             >
                 {/* Lotes Publicados */}
                 <View style={styles.section}>
@@ -94,10 +90,10 @@ export default function RecyclerDashboard() {
                         <Text style={styles.searchIcon}></Text>
                         <TextInput
                             style={styles.searchInput}
-                            placeholder="Buscar lotes"
+                            placeholder='Buscar lotes'
                             value={searchQuery}
                             onChangeText={setSearchQuery}
-                            placeholderTextColor="#999"
+                            placeholderTextColor='#999'
                         />
                     </View>
 

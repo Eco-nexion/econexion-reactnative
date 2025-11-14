@@ -1,15 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
-import {
-    View,
-    Text,
-    StyleSheet,
-    ScrollView,
-    Image,
-    Pressable,
-    ActivityIndicator,
-    RefreshControl,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';import { Colors, Spacing, FontSize } from '@/src/constants';
+import { View, Text, StyleSheet, ScrollView, Image, Pressable, ActivityIndicator, RefreshControl } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Colors, Spacing, FontSize } from '@/src/constants';
 import OffersService, { Offer } from '@/src/services/offersService';
 import { useRouter } from 'expo-router';
 
@@ -27,8 +19,8 @@ export default function GeneratorDashboard() {
     const loadOffers = async () => {
         try {
             const offers = await OffersService.getReceivedOffers();
-            const pending = offers.filter(o => o.status === 'PENDING' || o.status === 'ACCEPTED');
-            const completed = offers.filter(o => o.status === 'COMPLETED' || o.status === 'REJECTED');
+            const pending = offers.filter((o) => o.status === 'PENDING' || o.status === 'ACCEPTED');
+            const completed = offers.filter((o) => o.status === 'COMPLETED' || o.status === 'REJECTED');
 
             setReceivedOffers(pending);
             setCompletedOffers(completed);
@@ -48,7 +40,7 @@ export default function GeneratorDashboard() {
     if (loading) {
         return (
             <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color={Colors.ecoGreen} />
+                <ActivityIndicator size='large' color={Colors.ecoGreen} />
             </View>
         );
     }
@@ -64,18 +56,18 @@ export default function GeneratorDashboard() {
 
             <ScrollView
                 style={styles.container}
-                refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                }
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             >
                 <Text style={styles.mainTitle}>Panel de Control</Text>
 
                 {/* Crear Publicación Card */}
                 <View style={styles.createPostCard}>
                     <Image
-                        source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB2LCO_sG-Pmu9Z7ew20FLtWYIawbEgIr9s_rb2JOWGkLp09BtnwdLpHtR-GM4wbpWPml5ZXJ9FleW6dvTGFrgmYrsIwUK9ML-v-jf5h9QFqlPGXVMcUCHDEJr8bCOXIE5v_l-2T6PAoH8b9GqmNaty9BoTZo9bU_5Y1lk0KjUrx-mU5jA1nPuVc2wQzsm47hO7oSMNJlkN2TqT_CSq8UfJKn0vGX4Lg7Z95ZDEKDqeznGFOGCOVVjTLKM10qkB_y9-FnYBCJ1XBbFh' }}
+                        source={{
+                            uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB2LCO_sG-Pmu9Z7ew20FLtWYIawbEgIr9s_rb2JOWGkLp09BtnwdLpHtR-GM4wbpWPml5ZXJ9FleW6dvTGFrgmYrsIwUK9ML-v-jf5h9QFqlPGXVMcUCHDEJr8bCOXIE5v_l-2T6PAoH8b9GqmNaty9BoTZo9bU_5Y1lk0KjUrx-mU5jA1nPuVc2wQzsm47hO7oSMNJlkN2TqT_CSq8UfJKn0vGX4Lg7Z95ZDEKDqeznGFOGCOVVjTLKM10qkB_y9-FnYBCJ1XBbFh',
+                        }}
                         style={styles.createPostImage}
-                        resizeMode="cover"
+                        resizeMode='cover'
                     />
                     <View style={styles.createPostContent}>
                         <Text style={styles.createPostTitle}>Publicar Lote</Text>
@@ -124,10 +116,7 @@ export default function GeneratorDashboard() {
                         <Text style={styles.emptyText}>No hay ofertas terminadas</Text>
                     ) : (
                         completedOffers.map((offer) => (
-                            <Pressable
-                                key={offer.id}
-                                style={[styles.offerCard, styles.offerCardCompleted]}
-                            >
+                            <Pressable key={offer.id} style={[styles.offerCard, styles.offerCardCompleted]}>
                                 <Image
                                     source={{ uri: offer.post?.imageUrl || 'https://via.placeholder.com/56' }}
                                     style={styles.offerImage}
